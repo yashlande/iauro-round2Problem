@@ -1,12 +1,13 @@
+import { useSelector } from "react-redux";
 import Details from "./components/Details";
 import Form from "./components/Form";
 import "./styles.css";
 
 export default function App() {
   
-  const handleSubmit=(args)=>{
-    console.log("handle Subm it", args)
-  }
+  const state=useSelector(state=>state);
+
+  console.log(state)
   return (
     <div className="App">
       <div className="heading">
@@ -17,7 +18,7 @@ export default function App() {
 
         <div className="form">
         <h2 style={{margin:'10px'}}>Registration Form</h2>
-          <Form handleSubmit={handleSubmit}/>
+          <Form />
         </div>
         <div className="details">
         

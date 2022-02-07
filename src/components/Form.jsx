@@ -1,21 +1,17 @@
 import React from "react";
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormGroup from '@mui/material/FormGroup';
-import Checkbox from '@mui/material/Checkbox';
-import FormHelperText from '@mui/material/FormHelperText';
-import Select from '@mui/material/Select';
-import Autocomplete from '@mui/material/Autocomplete';
-import Button from '@mui/material/Button';
+import {
+    TextField, Box, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, InputLabel, MenuItem, FormGroup,
+    Checkbox, Select, Autocomplete, Button
+} from '@mui/material';
 
-function Form({ handleSubmit }) {
+import {addStudents} from './../Redux/studentSlice'
+import {useSelector, useDispatch} from 'react-redux'
+
+
+function Form() {
+
+    const dispatch=useDispatch();
+
     const options = ['CSE', 'BBA', 'EEE'];
 
     const [formData, setFormData] = React.useState({
@@ -30,6 +26,10 @@ function Form({ handleSubmit }) {
         dep: ''
     })
 
+    const [errors, setErrors] = React.useState({
+        fnameError: false
+    })
+
     const [value, setValue] = React.useState(options[0]);
     const [inputValue, setInputValue] = React.useState('');
 
@@ -39,24 +39,36 @@ function Form({ handleSubmit }) {
             ...formData,
             [event.target.name]: event.target.value
         })
+
+        if(errors.fnameError===true && event.target.name==='fullName'){
+            setErrors({...errors,fnameError:false})
+        }
     }
 
     const handleLangChange = (event) => {
-        console.log("Event = ",event)
+        // console.log("Event = ", event)
+        let localLang=formData.lang;
         setFormData({
             ...formData,
             lang:{
-                ...lang,
-                [event.target.name]:event.target.checked
+                ...localLang,
+                [event.target.name]: event.target.checked
             }
         });
     };
 
+    const handleSubmit = () => {
+        if(formData.fullName!=''){
+            dispatch(addStudents(formData))
+        }else{
+            setErrors({...errors, fnameError:true})
+        }
+    }
 
     const { eng, hin } = formData.lang;
+    const { fnameError } = errors;
     return (
         <>
-            {console.log(formData)}
             <Box
                 component="form"
                 sx={{
@@ -67,11 +79,13 @@ function Form({ handleSubmit }) {
             >
                 <div className="innerForm">
                     <TextField
+                        error={fnameError}
                         id="outlined-required"
                         label="Full Name"
                         value={formData.fullName}
                         onChange={handleFormData}
                         name="fullName"
+                        helperText={fnameError ? 'Please Enter Full Name' : null}
                     />
 
                     <TextField
@@ -151,7 +165,6 @@ function Form({ handleSubmit }) {
                         inputValue={inputValue}
                         onInputChange={(event, newInputValue) => {
                             setInputValue(newInputValue);
-                            console.log("Auto Complete = ", newInputValue)
                         }}
                         id="controllable-states-demo"
                         name="dep"
@@ -159,7 +172,7 @@ function Form({ handleSubmit }) {
                         // sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="Department" />}
                     />
-                    <Button variant="contained" onClick={() => handleSubmit("hi")}>Submit</Button>
+                    <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>
                 </div>
             </Box>
         </>

@@ -15,26 +15,48 @@ import Select from '@mui/material/Select';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 
-function Form({handleSubmit}) {
+function Form({ handleSubmit }) {
     const options = ['CSE', 'BBA', 'EEE'];
+
+    const [formData, setFormData] = React.useState({
+        fullName: '',
+        address: '',
+        gender: '',
+        age: '',
+        lang: {
+            eng: true,
+            hin: false,
+        },
+        dep: ''
+    })
+
     const [value, setValue] = React.useState(options[0]);
     const [inputValue, setInputValue] = React.useState('');
 
-    const [lang, setLang] = React.useState({
-        eng: true,
-        hin: false,
-    });
+    const handleFormData = (event) => {
+        // console.log("Event = ",event)
+        setFormData({
+            ...formData,
+            [event.target.name]: event.target.value
+        })
+    }
+
     const handleLangChange = (event) => {
-        setLang({
-            ...lang,
-            [event.target.name]: event.target.checked,
+        console.log("Event = ",event)
+        setFormData({
+            ...formData,
+            lang:{
+                ...lang,
+                [event.target.name]:event.target.checked
+            }
         });
     };
 
 
-    const { eng, hin } = lang;
+    const { eng, hin } = formData.lang;
     return (
         <>
+            {console.log(formData)}
             <Box
                 component="form"
                 sx={{
@@ -47,6 +69,9 @@ function Form({handleSubmit}) {
                     <TextField
                         id="outlined-required"
                         label="Full Name"
+                        value={formData.fullName}
+                        onChange={handleFormData}
+                        name="fullName"
                     />
 
                     <TextField
@@ -54,8 +79,9 @@ function Form({handleSubmit}) {
                         label="Address"
                         multiline
                         maxRows={4}
-                    // value={value}
-                    // onChange={handleChange}
+                        name="address"
+                        value={formData.address}
+                        onChange={handleFormData}
                     />
 
                     <FormControl>
@@ -64,9 +90,9 @@ function Form({handleSubmit}) {
                             row
                             aria-labelledby="demo-radio-buttons-group-label"
                             defaultValue="female"
-                            name="radio-buttons-group"
-                        // value={value}
-                        // onChange={handleChange}
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleFormData}
                         >
                             <FormControlLabel value="female" control={<Radio />} label="Female" />
                             <FormControlLabel value="male" control={<Radio />} label="Male" />
@@ -79,18 +105,19 @@ function Form({handleSubmit}) {
                         <Select
                             labelId="demo-simple-select-helper-label"
                             id="demo-simple-select-helper"
-                            // value={age}
+                            value={formData.age}
                             label="Age"
-                        // onChange={handleChange}
+                            name="age"
+                            onChange={handleFormData}
                         >
                             <MenuItem value="">
                                 <em>Select</em>
                             </MenuItem>
-                            <MenuItem value={10 - 20}>10-20</MenuItem>
-                            <MenuItem value={21 - 30}>21-30</MenuItem>
-                            <MenuItem value={31 - 40}>31-40</MenuItem>
-                            <MenuItem value={41 - 50}>41-50</MenuItem>
-                            <MenuItem value={51 - 60}>51-60</MenuItem>
+                            <MenuItem value={'10 - 20'}>10-20</MenuItem>
+                            <MenuItem value={'21 - 30'}>21-30</MenuItem>
+                            <MenuItem value={'31 - 40'}>31-40</MenuItem>
+                            <MenuItem value={'41 - 50'}>41-50</MenuItem>
+                            <MenuItem value={'51 - 60'}>51-60</MenuItem>
                         </Select>
                     </FormControl>
                     <FormControl sx={{ m: 2 }} component="fieldset" variant="standard">
@@ -98,13 +125,13 @@ function Form({handleSubmit}) {
                         <FormGroup>
                             <FormControlLabel
                                 control={
-                                    <Checkbox checked={eng} onChange={handleLangChange} name="gilad" />
+                                    <Checkbox checked={eng} onChange={handleLangChange} name="eng" />
                                 }
                                 label="English"
                             />
                             <FormControlLabel
                                 control={
-                                    <Checkbox checked={hin} onChange={handleLangChange} name="jason" />
+                                    <Checkbox checked={hin} onChange={handleLangChange} name="hin" />
                                 }
                                 label="Hindi"
                             />
@@ -116,17 +143,23 @@ function Form({handleSubmit}) {
                         value={value}
                         onChange={(event, newValue) => {
                             setValue(newValue);
+                            setFormData({
+                                ...formData,
+                                dep: newValue
+                            })
                         }}
                         inputValue={inputValue}
                         onInputChange={(event, newInputValue) => {
                             setInputValue(newInputValue);
+                            console.log("Auto Complete = ", newInputValue)
                         }}
                         id="controllable-states-demo"
+                        name="dep"
                         options={options}
                         // sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="Department" />}
                     />
-                    <Button variant="contained" onClick={()=>handleSubmit("hi")}>Submit</Button>
+                    <Button variant="contained" onClick={() => handleSubmit("hi")}>Submit</Button>
                 </div>
             </Box>
         </>

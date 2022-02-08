@@ -66,7 +66,7 @@ function Details() {
                                         </Button>
                                     </TableCell>
                                     <TableCell align="right">
-                                        <Button variant="contained" onClick={() => handleDelete(index)} color="error" startIcon={<DeleteIcon />}>
+                                        <Button disabled={status ? true : false} variant="contained" onClick={() => handleDelete(index)} color="error" startIcon={<DeleteIcon />}>
                                             Delete
                                         </Button>
                                     </TableCell>

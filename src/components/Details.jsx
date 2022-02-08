@@ -4,6 +4,13 @@ import { Button } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { deleteStudents, updateInfo } from './../Redux/studentSlice'
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 function Details() {
 
@@ -16,10 +23,10 @@ function Details() {
     const handleDelete = (index) => {
         dispatch(deleteStudents(index))
     }
-    const handleUpdate = (index)=>{
+    const handleUpdate = (index) => {
         dispatch(updateInfo({
-            status:true,
-            index:index
+            status: true,
+            index: index
         }))
     }
     return (
@@ -28,40 +35,43 @@ function Details() {
                 <div style={{ margin: '10px' }}>
                     <h2 style={{ textAlign: 'center' }}>Registred Students</h2>
                 </div>
-                <div>
-                    <table style={{ width: '100%' }}>
-                        <thead>
-                            <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                students && students.map((item, index) => {
-                                    return (
-                                        <tr key={item.id}>
-                                            <td>{item.id}</td>
-                                            <td>{item.fullName}</td>
-                                            <td>
-                                            <Button variant="contained" onClick={() => handleUpdate(index)} color="primary" startIcon={<EditIcon />}>
-                                                    Edite
-                                            </Button>
-                                            </td>
-                                            <td>
-                                                <Button variant="contained" onClick={() => handleDelete(index)} color="error" startIcon={<DeleteIcon />}>
-                                                    Delete
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 600 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell align="right">Full Name</TableCell>
+                                <TableCell align="right">Edit</TableCell>
+                                <TableCell align="right">Delete</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {students && students.map((row, index) => (
+                                <TableRow
+                                    key={row.id}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {row.id}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {row.fullName}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button variant="contained" onClick={() => handleUpdate(index)} color="primary" startIcon={<EditIcon />}>
+                                            Edite
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button variant="contained" onClick={() => handleDelete(index)} color="error" startIcon={<DeleteIcon />}>
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </div>
         </>
     )

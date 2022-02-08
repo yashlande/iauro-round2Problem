@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import {
     TextField, Box, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, InputLabel, MenuItem, FormGroup,
-    Checkbox, Select, Autocomplete, Button
+    Checkbox, Select, Autocomplete, Button, Snackbar, Alert
 } from '@mui/material';
 
 import { addStudents, updateInfo, updateStudents } from './../Redux/studentSlice'
@@ -47,6 +47,7 @@ function Form() {
         dep: ''
     }
 
+    const [openSnack, setOpenSnack] = React.useState(false);
 
     const [value, setValue] = React.useState(options[0]);
     const [inputValue, setInputValue] = React.useState('');
@@ -55,17 +56,7 @@ function Form() {
         fnameError: false
     })
 
-    // if(status===true){
-    //     setFormData({...students[index]})
-    //     setValue(students[index].dep)
-    //     dispatch(updateInfo({
-    //         status:false,
-    //         index:-1
-    //     }))
-    // }
-
     useEffect(() => {
-        // console.log("In use Effect ....", status, "Student Data =", students[index])
         if (status === true) {
             setFormData({ ...students[index] })
             setValue(students[index].dep)
@@ -79,7 +70,6 @@ function Form() {
 
 
     const handleFormData = (event) => {
-        // console.log("Event = ",event)
         setFormData({
             ...formData,
             [event.target.name]: event.target.value
@@ -91,7 +81,6 @@ function Form() {
     }
 
     const handleLangChange = (event) => {
-        // console.log("Event = ", event)
         let localLang = formData.lang;
         setFormData({
             ...formData,
@@ -102,31 +91,42 @@ function Form() {
         });
     };
 
+    const clearFields = () => {
+        setFormData({ ...clear })
+        setValue(options[0]);
+        setInputValue('')
+    }
+
     const handleSubmit = () => {
         if (status === false) {
             if (formData.fullName != '') {
                 formData.id = "id" + Math.random().toString(16).slice(2)
                 dispatch(addStudents(formData))
-                setFormData({ ...clear })
+                setOpenSnack(true)
+                clearFields()
             } else {
                 setErrors({ ...errors, fnameError: true })
             }
         } else {
             if (formData.fullName != '') {
-                // formData.id = "id" + Math.random().toString(16).slice(2)
                 dispatch(updateStudents({
-                   index:index,
-                   data:formData 
+                    index: index,
+                    data: formData
                 }))
-                setFormData({ ...clear })
+                clearFields()
                 dispatch(updateInfo({
                     status: false,
                     index: -1
                 }))
+                setOpenSnack(true)
             } else {
                 setErrors({ ...errors, fnameError: true })
             }
         }
+    }
+
+    const handleSnackClose=()=>{
+        setOpenSnack(false)
     }
 
     const { eng, hin } = formData.lang;
@@ -239,6 +239,11 @@ function Form() {
                     <Button variant="contained" onClick={() => handleSubmit()}>{status ? 'Update' : 'Submit'}</Button>
                 </div>
             </Box>
+            <Snackbar open={openSnack} autoHideDuration={4000} onClose={handleSnackClose}>
+                <Alert onClose={handleSnackClose} severity="success" sx={{ width: '100%' }}>
+                    Task Completed Successfully
+                </Alert>
+            </Snackbar>
         </>
     )
 }

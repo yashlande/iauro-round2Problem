@@ -16,6 +16,9 @@ function Details() {
 
     const students = useSelector(state => state.students.studentRecords);
 
+    const updateStatus = useSelector(state => state.students.updateInfo);
+    const { status, index } = updateStatus;
+
     // console.log("Details State =", students)
 
     const dispatch = useDispatch();
@@ -58,7 +61,7 @@ function Details() {
                                         {row.fullName}
                                     </TableCell>
                                     <TableCell align="right">
-                                        <Button variant="contained" onClick={() => handleUpdate(index)} color="primary" startIcon={<EditIcon />}>
+                                        <Button disabled={status ? true : false} variant="contained" onClick={() => handleUpdate(index)} color="primary" startIcon={<EditIcon />}>
                                             Edite
                                         </Button>
                                     </TableCell>

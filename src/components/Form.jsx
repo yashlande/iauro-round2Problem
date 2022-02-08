@@ -15,6 +15,7 @@ function Form() {
     const options = ['CSE', 'BBA', 'EEE'];
 
     const [formData, setFormData] = React.useState({
+        id:'',
         fullName: '',
         address: '',
         gender: '',
@@ -25,6 +26,19 @@ function Form() {
         },
         dep: ''
     })
+
+    const clear={
+        id:'',
+        fullName: '',
+        address: '',
+        gender: '',
+        age: '',
+        lang: {
+            eng: true,
+            hin: false,
+        },
+        dep: ''
+    }
 
     const [errors, setErrors] = React.useState({
         fnameError: false
@@ -59,7 +73,9 @@ function Form() {
 
     const handleSubmit = () => {
         if(formData.fullName!=''){
+            formData.id= "id" + Math.random().toString(16).slice(2)
             dispatch(addStudents(formData))
+            setFormData({...clear})
         }else{
             setErrors({...errors, fnameError:true})
         }

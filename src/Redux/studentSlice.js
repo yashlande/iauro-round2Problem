@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  studentRecords:[]
+  studentRecords:[],
 }
 
 export const studentSlice = createSlice({
@@ -16,8 +16,8 @@ export const studentSlice = createSlice({
       // state.value += 1
       state.studentRecords.push(action.payload);
     },
-    deleteStudents: (state) => {
-      state.value -= 1
+    deleteStudents: (state, action) => {
+      state.studentRecords.splice(action.payload,1)
     },
     updateStudents: (state, action) => {
       state.value += action.payload

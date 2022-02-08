@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     TextField, Box, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, InputLabel, MenuItem, FormGroup,
     Checkbox, Select, Autocomplete, Button
 } from '@mui/material';
 
-import {addStudents} from './../Redux/studentSlice'
-import {useSelector, useDispatch} from 'react-redux'
+import { addStudents, updateInfo, updateStudents } from './../Redux/studentSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 
 function Form() {
 
-    const dispatch=useDispatch();
+    const updateStatus = useSelector(state => state.students.updateInfo);
+    const { status, index } = updateStatus;
+
+    const students = useSelector(state => state.students.studentRecords);
+
+    // console.log("Update Status =", updateStatus)
+
+    const dispatch = useDispatch();
 
     const options = ['CSE', 'BBA', 'EEE'];
 
     const [formData, setFormData] = React.useState({
-        id:'',
+        id: '',
         fullName: '',
         address: '',
         gender: '',
@@ -27,8 +34,8 @@ function Form() {
         dep: ''
     })
 
-    const clear={
-        id:'',
+    const clear = {
+        id: '',
         fullName: '',
         address: '',
         gender: '',
@@ -40,12 +47,36 @@ function Form() {
         dep: ''
     }
 
+
+    const [value, setValue] = React.useState(options[0]);
+    const [inputValue, setInputValue] = React.useState('');
+
     const [errors, setErrors] = React.useState({
         fnameError: false
     })
 
-    const [value, setValue] = React.useState(options[0]);
-    const [inputValue, setInputValue] = React.useState('');
+    // if(status===true){
+    //     setFormData({...students[index]})
+    //     setValue(students[index].dep)
+    //     dispatch(updateInfo({
+    //         status:false,
+    //         index:-1
+    //     }))
+    // }
+
+    useEffect(() => {
+        // console.log("In use Effect ....", status, "Student Data =", students[index])
+        if (status === true) {
+            setFormData({ ...students[index] })
+            setValue(students[index].dep)
+            // dispatch(updateInfo({
+            //     status: false,
+            //     index: -1
+            // }))
+        }
+
+    }, [status])
+
 
     const handleFormData = (event) => {
         // console.log("Event = ",event)
@@ -54,17 +85,17 @@ function Form() {
             [event.target.name]: event.target.value
         })
 
-        if(errors.fnameError===true && event.target.name==='fullName'){
-            setErrors({...errors,fnameError:false})
+        if (errors.fnameError === true && event.target.name === 'fullName') {
+            setErrors({ ...errors, fnameError: false })
         }
     }
 
     const handleLangChange = (event) => {
         // console.log("Event = ", event)
-        let localLang=formData.lang;
+        let localLang = formData.lang;
         setFormData({
             ...formData,
-            lang:{
+            lang: {
                 ...localLang,
                 [event.target.name]: event.target.checked
             }
@@ -72,12 +103,29 @@ function Form() {
     };
 
     const handleSubmit = () => {
-        if(formData.fullName!=''){
-            formData.id= "id" + Math.random().toString(16).slice(2)
-            dispatch(addStudents(formData))
-            setFormData({...clear})
-        }else{
-            setErrors({...errors, fnameError:true})
+        if (status === false) {
+            if (formData.fullName != '') {
+                formData.id = "id" + Math.random().toString(16).slice(2)
+                dispatch(addStudents(formData))
+                setFormData({ ...clear })
+            } else {
+                setErrors({ ...errors, fnameError: true })
+            }
+        } else {
+            if (formData.fullName != '') {
+                // formData.id = "id" + Math.random().toString(16).slice(2)
+                dispatch(updateStudents({
+                   index:index,
+                   data:formData 
+                }))
+                setFormData({ ...clear })
+                dispatch(updateInfo({
+                    status: false,
+                    index: -1
+                }))
+            } else {
+                setErrors({ ...errors, fnameError: true })
+            }
         }
     }
 
@@ -188,7 +236,7 @@ function Form() {
                         // sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="Department" />}
                     />
-                    <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>
+                    <Button variant="contained" onClick={() => handleSubmit()}>{status ? 'Update' : 'Submit'}</Button>
                 </div>
             </Box>
         </>

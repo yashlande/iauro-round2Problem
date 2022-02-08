@@ -7,7 +7,7 @@ export default function App() {
   
   const state=useSelector(state=>state);
 
-  console.log(state)
+  console.log("Global State= ",state)
   return (
     <div className="App">
       <div className="heading">

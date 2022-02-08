@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { deleteStudents } from './../Redux/studentSlice'
+import { deleteStudents, updateInfo } from './../Redux/studentSlice'
 
 function Details() {
 
     const students = useSelector(state => state.students.studentRecords);
 
-    console.log("Details State =", students)
+    // console.log("Details State =", students)
 
     const dispatch = useDispatch();
 
@@ -17,7 +17,10 @@ function Details() {
         dispatch(deleteStudents(index))
     }
     const handleUpdate = (index)=>{
-
+        dispatch(updateInfo({
+            status:true,
+            index:index
+        }))
     }
     return (
         <>
@@ -28,10 +31,12 @@ function Details() {
                 <div>
                     <table style={{ width: '100%' }}>
                         <thead>
+                            <tr>
                             <th>ID</th>
                             <th>Name</th>
                             <th>Edit</th>
                             <th>Delete</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {
